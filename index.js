@@ -2,24 +2,34 @@ exports.handler = function( event, context ) {
 
     var http = require( 'http' );
     var https = require( 'https' );
-    var current = 'memememememe';
+    var current = 'no selection';
+    var alexa_output = 'Sorry we were not able to access the hub site.'
 
-    // if ( event.request.intent ) {
-    //     current = event.request.intent.slots.Reddit.value.toLowerCase();
-    // }
+    var url = 'https://inouyehub.localtunnel.me/';
 
-    var url = 'https://www.google.com/';
+    if ( event.request.intent ) {
+        current = event.request.intent.slots.Reddit.value.toLowerCase();
+        var current_arr = current.split(" ");
+    }
 
-    https.get( url, function( response ) {
+    if (current_arr[0].toLowerCase() == 'scene'){
+        current_arr.shift();
+        alexa_output = 'Turned on scene ' + current_arr.join(" ");
+        current = current_arr.join("_");
+        url = url + '/lights/' + current;
+    }
 
-        response.on( 'end', function() {
+    if (current_arr[0].toLowerCase() == 'off'){
+        url = url + 'lights/off';
+        alexa_output = 'Turning off lights'
+    }
 
-            var text = 'we made it boyz';
+    https.get( url, function( ) {
+
+            var text = alexa_output + url;
         
             output( text, context );
-        
-        } );
-        
+
     } );
     
 };
