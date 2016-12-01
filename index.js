@@ -8,7 +8,7 @@ exports.handler = function( event, context ) {
     var alexa_output = 'Sorry we were not able to access the hub site.'
     var output_continue = false
 
-    var url = 'https://inouyehub.localtunnel.me/';
+    var url = 'https://inouyehub5.localtunnel.me/';
 
     if ( event.request.intent ) {
         current = event.request.intent.slots.Reddit.value.toLowerCase();
@@ -29,14 +29,27 @@ exports.handler = function( event, context ) {
         output_continue = true;
     }
 
-    if (current_arr[0].toLowerCase() == 'scene'){
+    if (current_arr[0].toLowerCase() == 'welcome'){
+        alexa_output = "Oh Snap! Can you feel that? It's party time!";
+        if(current_arr.length > 1){
+            current_arr.shift();   
+            alexa_output = "Welcome! "+ current_arr.join(", ").replace(/\b./g, function(m){ return m.toUpperCase(); }) + ", and fellow niggas we about to turn up and go dumb. Time to pop a pill and get crunk!";
+        }
+        url = url + 'party'
+    }
+
+    if (current_arr[0].toLowerCase() == 'scene' || current_arr[0].toLowerCase() == 'seen' || current_arr[0].toLowerCase() == 'lights' || current_arr[0].toLowerCase() == 'scenes' || current_arr[0].toLowerCase() == 'seens' || current_arr[0].toLowerCase() == 'light' || current_arr[0].toLowerCase() == 'setting'){
         current_arr.shift();
         if (current_arr[0].toLowerCase() == 'new'){
             current_arr.shift();
             alexa_output = 'Name scene ' + current_arr.join(" ");
             sessionRequests.push(current_arr.join("_"))
             output_continue = true;
-        }else{
+        }else if(current_arr[0].toLowerCase() == 'off'){
+            url = url + 'lights/led_off';
+            alexa_output = 'Turning off lights'
+        }
+        else{
             alexa_output = 'Turned on scene ' + current_arr.join(" ");
             current = current_arr.join("_");
             url = url + 'lights/' + current;
@@ -44,7 +57,7 @@ exports.handler = function( event, context ) {
     }
 
     if (current_arr[0].toLowerCase() == 'off'){
-        url = url + 'lights/off';
+        url = url + 'lights/led_off';
         alexa_output = 'Turning off lights'
     }
 
@@ -67,7 +80,7 @@ exports.handler = function( event, context ) {
         output2( text, context );
     }else{
         https.get( url, function( ) {
-                var text = alexa_output + url;
+                var text = alexa_output;
                 output( text, context );
         } );
     }
