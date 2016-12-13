@@ -16,21 +16,9 @@ exports.handler = function( event, context ) {
         var current_arr = current.split(" ");
     }
 
-    if (current_arr[0].toLowerCase() == 'off'){
-        url = 'https://url.ngrok.io/';
-        url = url + 'lights/led_off';
-        alexa_output = 'Turning off lights'
-    }else{
-        alexa_output = 'Turned on scene ' + current_arr.join(" ");
-        url = 'https://url.ngrok.io/';
-        current = current_arr.join("_");
-        url = url + 'lights/' + current;
-    }
-
     if (current_arr[0].toLowerCase() == 'yes' || current_arr[0].toLowerCase() == 'set'){
         alexa_output = 'Created new scene ' + sessionRequests;
         var scene_name = sessionRequests[0].replace(/\s+/g, '_').toLowerCase();
-        url = 'https://url.ngrok.io/';
         url = url + 'scenes/new/' + scene_name;
         sessionRequests=[];
     }
@@ -45,7 +33,6 @@ exports.handler = function( event, context ) {
 
     if (current_arr[0].toLowerCase() == 'welcome'){
         alexa_output = "Oh Snap! Can you feel that? It's party time!";
-        url = 'https://url.ngrok.io/';
         if(current_arr.length > 1){
             current_arr.shift();
             alexa_output = "Welcome! "+ current_arr.join(", ").replace(/\b./g, function(m){ return m.toUpperCase(); }) + ", and fellow niggas we about to turn up and go dumb. Time to pop a pill and get crunk!";
@@ -54,7 +41,6 @@ exports.handler = function( event, context ) {
     }
 
     if (current_arr[0].toLowerCase() == 'scene' || current_arr[0].toLowerCase() == 'seen' || current_arr[0].toLowerCase() == 'lights' || current_arr[0].toLowerCase() == 'scenes' || current_arr[0].toLowerCase() == 'seens' || current_arr[0].toLowerCase() == 'light' || current_arr[0].toLowerCase() == 'setting'){
-        url = 'https://url.ngrok.io/';
         current_arr.shift();
         if (current_arr[0].toLowerCase() == 'new' || current_arr[0].toLowerCase() == 'knew' || current_arr[0].toLowerCase() == 'build'){
             current_arr.shift();
@@ -72,15 +58,16 @@ exports.handler = function( event, context ) {
         }
     }
 
+    if (current_arr[0].toLowerCase() == 'off'){
+        url = url + 'lights/led_off';
+        alexa_output = 'Turning off lights'
+    }
+
     if (current_arr[0].toLowerCase() == 'brightness'){
-        url = 'https://url.ngrok.io/';
         current_arr.shift();
         if (current_arr[0].toLowerCase() == 'low'){
             url = url + 'brightness/50';
             alexa_output = 'Light brightness is 50'
-        }else if(current_arr[0].toLowerCase() == 'lower'){
-            url = url + 'brightness/100';
-            alexa_output = 'Light brightness is 100'
         }else if(current_arr[0].toLowerCase() == 'medium' || current_arr[0].toLowerCase() == 'middle'){
             url = url + 'brightness/150';
             alexa_output = 'Light brightness is 150'
@@ -91,9 +78,8 @@ exports.handler = function( event, context ) {
     }
 
     if (current_arr[0].toLowerCase() == 'football'){
-        url = 'https://url.ngrok.io/';
-        url = url + 'nfl';
-        alexa_output = 'Switching to Seahawks!'
+            url = url + 'nfl';
+            alexa_output = 'Switching to Seahawks!'
     }
 
     if (output_continue){
